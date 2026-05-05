@@ -1,46 +1,41 @@
-const BASE_URL = "http://localhost/audit-system";
-// Add Employee
-function addEmployee() {
-const data = {
-emp_id: document.getElementById("emp_id").value,
-name: document.getElementById("name").value,
-salary: document.getElementById("salary").value
-};
-fetch(`${BASE_URL}/addEmployee.php`, {
-method: "POST",
-headers: { "Content-Type": "application/json" },
-body: JSON.stringify(data)
-})
-.then(res => res.text())
-.then(data => alert(data));
-}
-// Update Employee
-function updateEmployee() {
-const id = document.getElementById("update_id").value;
-const salary = document.getElementById("new_salary").value;
-fetch(`${BASE_URL}/updateEmployee.php?id=${id}`, {
-method: "PUT",
-headers: { "Content-Type": "application/json" },
-body: JSON.stringify({ salary })
-})
-.then(res => res.text())
-.then(data => alert(data));
-}
-// Load Logs
-function loadLogs() {
-fetch(`${BASE_URL}/getLogs.php`)
-.then(res => res.json())
-.then(data => {
-document.getElementById("output").innerText =
-JSON.stringify(data, null, 2);
+const form = document.getElementById("studentForm");
+
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const student = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        dob: document.getElementById("dob").value,
+        department: document.getElementById("department").value,
+        phone: document.getElementById("phone").value
+    };
+
+    // Basic validation
+    if (!student.name || !student.email || !student.dob || !student.department || !student.phone) {
+        alert("Please fill all fields");
+        return;
+    }
+
+    try {
+        const res = await fetch("http://localhost/task2/addStudent.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(student)
+        });
+
+        const data = await res.text();
+        alert(data);
+        form.reset();
+
+    } catch (error) {
+        console.log("Error:", error);
+        alert("Server error");
+    }
 });
-}
-// Load Report
-function loadReport() {
-fetch(`${BASE_URL}/getReport.php`)
-.then(res => res.json())
-.then(data => {
-document.getElementById("output").innerText =
-JSON.stringify(data, null, 2);
-});
+
+function goHome(){
+    window.location.href = "index.html";
 }
